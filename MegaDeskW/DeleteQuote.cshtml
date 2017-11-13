@@ -1,0 +1,122 @@
+﻿@{
+    var desk = new MegaDeskW.Desk();
+    var quote = new MegaDeskW.Quote();
+    var width = "";
+    var depth = "";
+    var surface = "";
+    var drawers = "";
+    var price = "";
+    var rushDays = "";
+    var material = "";
+    var date = "";
+    var clientName = "";
+    var Id = "";
+
+    if (!IsPost)
+    {
+        if (!Request.QueryString["ID"].IsEmpty() && Request.QueryString["ID"].IsInt())
+        {
+            Id = Request.QueryString["ID"];
+            var db = Database.Open("MegaDesk");
+            var dbCommand = "SELECT * FROM Desk WHERE ID = @0";
+            var row = db.QuerySingle(dbCommand, Id);
+            if (row != null)
+            {
+                clientName = row.ClientName;
+                width = Convert.ToString(row.Width);
+                depth = Convert.ToString(row.Depth);
+                date = Convert.ToString(DateTime.Today.ToString());
+                drawers = Convert.ToString(row.Drawers);
+                rushDays = Convert.ToString(row.RushDays);
+                material = row.Material;
+                surface = Convert.ToString(row.Surface);
+                price = Convert.ToString(row.Price);
+            }
+            else
+            {
+                Validation.AddFormError("No movie was found for that ID.");
+            }
+        }
+        else
+        {
+            Validation.AddFormError("No movie was found for that ID.");
+        }
+    }
+
+    if (IsPost && !Request["buttonDelete"].IsEmpty())
+    {
+        Id = Request.Form["Id"];
+        var db = Database.Open("MegaDesk");
+        var deleteCommand = "DELETE FROM Desk WHERE ID = @0";
+        db.Execute(deleteCommand,Id);
+        Response.Redirect("~/MegaDeskMain");
+    }
+}
+<html>
+<head>
+    <title>Delete a Movie</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body>
+    @RenderPage("Header.cshtml")
+
+
+    <h1>Delete a Quote</h1>
+    @Html.ValidationSummary()
+
+    <form method="post" class="form">
+        <fieldset>
+            <legend>Movie Information</legend>
+
+            <p>
+                <span>Client Name:</span>
+                <span>@clientName</span>
+            </p>
+
+            <p>
+                <span>Width:</span>
+                <span>@width</span>
+            </p>
+
+            <p>
+                <span>Depth:</span>
+                <span>@depth</span>
+            </p>
+
+            <p>
+                <span>Drawers:</span>
+                <span>@drawers</span>
+            </p>
+
+            <p>
+                <span>Material:</span>
+                <span>@material</span>
+            </p>
+
+            <p>
+                <span>Surface:</span>
+                <span>@surface</span>
+            </p>
+
+            <p>
+                <span>Price:</span>
+                <span>@price</span>
+            </p>
+
+            <p>
+                <span>Date:</span>
+                <span>@date</span>
+            </p>
+
+            <p>
+                <span>Rush Days:</span>
+                <span>@rushDays</span>
+            </p>
+
+            <input type="hidden" name="Id" value="@Id" />
+            <p><input type="submit" name="buttonDelete" value="Delete Quote" /></p>
+        </fieldset>
+        <p><a href="~/MegaDeskMain">Return to quote listing</a></p>
+    </form>
+</body>
+</html>

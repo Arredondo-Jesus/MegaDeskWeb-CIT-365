@@ -1,0 +1,125 @@
+﻿@{
+    Validation.RequireField("width", "Width is required field");
+    Validation.RequireField("depth", "Depth is required field");
+    Validation.RequireField("drawers", "Drawers is required field");
+    Validation.RequireField("rushDays", "Rush Days cannot be null");
+    Validation.RequireField("material", "Material cannot be null");
+    Validation.RequireField("clientName", "Client Name is required field");
+
+    var desk = new MegaDeskW.Desk();
+    var quote = new MegaDeskW.Quote();
+    var width = "";
+    var depth = "";
+    var surface = "";
+    var drawers = "";
+    var price = "";
+    var rushDays = "";
+    var material = "";
+    var date = "";
+    var clientName = "";
+
+    date = DateTime.Today.ToString("MM/dd/yyyy");
+
+    if (IsPost && Validation.IsValid())
+    {
+        clientName = Request.Form["clientName"];
+        width = Request.Form["width"];
+        depth = Request.Form["depth"];
+        drawers = Request.Form["drawers"];
+        rushDays = Request.Form["rushDays"];
+        material = Request.Form["material"];
+        desk.width = Convert.ToInt32(width);
+        desk.depth = Convert.ToInt32(depth);
+        quote.rushDays = Convert.ToInt32(rushDays);
+        quote.desk = desk;
+        quote.date = Convert.ToDateTime(date);
+
+        surface = desk.calculateSurface(Convert.ToInt32(width), Convert.ToInt32(depth));
+        desk.surface = Convert.ToInt32(surface);
+
+        price = quote.calculatePrice(desk, material, quote);
+        quote.price = Convert.ToInt32(price);
+
+        var db = Database.Open("MegaDesk");
+        var insertCommand = "INSERT INTO Desk (Width, Depth, Drawers, Material, Surface," +
+                    "Price, Date, ClientName, RushDays) " +
+                    "VALUES(@0, @1, @2, @3, @4, @5, @6, @7, @8)";
+        db.Execute(insertCommand, width, depth, drawers, material, surface, price, date, clientName, rushDays);
+        Response.Redirect("~/MegaDeskMain");
+    }
+
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Mega Desk - Add Quote</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body>
+    @RenderPage("Header.cshtml")
+
+    <div>
+        <h1>Add A Quote</h1>
+        @Html.ValidationSummary()
+
+        <form method="post" class="form">
+            <fieldset>
+                <legend>Desk Information</legend>
+                <p><label for="clientName">Client Name:</label>
+                    <input type="text" name="clientName" value="@Request.Form["clientName"]"/>
+                </p>
+                <p>
+                    <label for="width">Desk Width:</label>
+                    <input type="text" name="width" value="@Request.Form["width"]" />
+                </p>
+                <p>
+                    <label for="depth">Desk Depth:</label>
+                    <input type="text" name="depth" value="@Request.Form["depth"]" />
+                </p>
+                <p>
+                    <label>Date:</label>
+                    <input type="text" name="date" value="@date" disabled/>
+                </p>
+                <p>
+                    <label for="rushDays">Rush Days:</label>
+                    <select name="rushDays">@Request.Form["rushDays"]
+                        <option selected>0</option>
+                        <option>3</option>
+                        <option>5</option>
+                        <option>7</option>
+                    </select>
+                </p>
+                <p>
+                    <label for="material">Material:</label>
+                    <select name="material">@Request.Form["material"]
+                        <option selected>Oak</option>
+                        <option>Laminate</option>
+                        <option>Pine</option>
+                        <option>Rossewood</option>
+                        <option>Veneer</option>
+                    </select>
+                </p>
+                <p>
+                    <label for="drawers">Drawers:</label>
+                    <select name="drawers">
+                        @Request.Form["rushDays"]
+                        <option selected>0</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                    </select>
+                </p>
+                <p><input type="submit" name="submitButton"/></p>
+            </fieldset>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,154 @@
+﻿body{
+	padding: 0;
+	margin: 0;
+}
+
+
+h1 {
+    font-family: Brush Script MT,cursive;
+    font-size: 50px;
+    text-align:center;
+}
+
+nav {
+    background-color: #3779AD;
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 30px; 
+}
+
+nav ul {
+    background-color: #000000;
+    margin: 0 auto;
+    width: 100%;
+}
+
+nav ul li {
+    display: inline-block;
+    padding: 20px;
+    margin: 0 auto;
+}
+
+body div table {
+    margin: 0 auto;
+}
+
+div table thead th {
+    padding: 5px;
+}
+
+th a {
+    text-decoration: none;
+    color: #3779AD;
+    font-weight: bold;
+}
+
+tbody tr td {
+    padding: 5px; 
+}
+
+tbody tr td {
+    text-align: center;
+    border: solid 1px #ff6a00;
+}
+
+
+/**/
+
+/*******************************************************************/
+.form {
+    margin: 10px auto;
+    max-width: 400px;
+    padding: 20px 12px 10px 20px;
+    font: 13px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    border: solid 1px #999999;
+}
+
+    .form li {
+        padding: 0;
+        display: inline-block;
+        list-style: none;
+        margin: 10px 0 0 0;
+    }
+
+    .form label {
+        margin: 0 0 3px 0;
+        padding: 0px;
+        display: block;
+        font-weight: bold;
+    }
+
+    .form input[type=text],
+    .form input[type=date],
+    .form input[type=datetime],
+    .form input[type=number],
+    .form input[type=search],
+    .form input[type=time],
+    .form input[type=url],
+    .form input[type=email],
+    textarea,
+    select {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        border: 1px solid #BEBEBE;
+        padding: 7px;
+        margin: 0px;
+        -webkit-transition: all 0.30s ease-in-out;
+        -moz-transition: all 0.30s ease-in-out;
+        -ms-transition: all 0.30s ease-in-out;
+        -o-transition: all 0.30s ease-in-out;
+        outline: none;
+    }
+
+        .form input[type=text]:focus,
+        .form input[type=date]:focus,
+        .form input[type=datetime]:focus,
+        .form input[type=number]:focus,
+        .form input[type=search]:focus,
+        .form input[type=time]:focus,
+        .form input[type=url]:focus,
+        .form input[type=email]:focus,
+        .form textarea:focus,
+        .form select:focus {
+            -moz-box-shadow: 0 0 8px #88D5E9;
+            -webkit-box-shadow: 0 0 8px #88D5E9;
+            border: 1px solid #88D5E9;
+        }
+
+    .form .field-divided {
+        width: 49%;
+    }
+
+    .form .field-long {
+        width: 100%;
+    }
+
+    .form .field-select {
+        width: 100%;
+    }
+
+    .form .field-textarea {
+        height: 100px;
+    }
+
+    .form input[type=submit], .form-style-1 input[type=button] {
+        background: #4B99AD;
+        padding: 8px 15px 8px 15px;
+        border: none;
+        color: #fff;
+    }
+
+        .form input[type=submit]:hover, .form-style-1 input[type=button]:hover {
+            background: #4691A4;
+            -moz-box-shadow: none;
+            -webkit-box-shadow: none;
+        }
+
+    .form .required {
+        color: red;
+    }
+
+fieldset {
+    border: none;
+}

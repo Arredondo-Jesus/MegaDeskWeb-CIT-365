@@ -1,0 +1,160 @@
+﻿@{
+
+    var desk = new MegaDeskW.Desk();
+    var quote = new MegaDeskW.Quote();
+    var width = "";
+    var depth = "";
+    var surface = "";
+    var drawers = "";
+    var price = "";
+    var rushDays = "";
+    var material = "";
+    var date = "";
+    var clientName = "";
+    var Id = "";
+
+    if (!IsPost)
+    {
+        if (!Request.QueryString["ID"].IsEmpty() && Request.QueryString["ID"].IsInt())
+        {
+            Id = Request.QueryString["ID"];
+            var db = Database.Open("MegaDesk");
+            var dbCommand = "SELECT * FROM Desk WHERE ID = @0";
+            var row = db.QuerySingle(dbCommand, Id);
+
+            if (row != null)
+            {
+                clientName = row.ClientName;
+                width = Convert.ToString(row.Width);
+                depth = Convert.ToString(row.Depth);
+                date = Convert.ToString(DateTime.Today.ToString());
+                drawers = Convert.ToString(row.Drawers);
+                rushDays = Convert.ToString(row.RushDays);
+                material = row.Material;
+                surface = Convert.ToString(row.Surface);
+                price = Convert.ToString(row.Price);
+
+            }
+            else
+            {
+                Validation.AddFormError("No movie was selected.");
+            }
+        }
+        else
+        {
+            Validation.AddFormError("No movie was selected.");
+        }
+    }
+
+    if (IsPost)
+    {
+
+        date = DateTime.Today.ToString("MM/dd/yyyy");
+
+        clientName = Request.Form["clientName"];
+        width = Request.Form["width"];
+        depth = Request.Form["depth"];
+        drawers = Request.Form["drawers"];
+        rushDays = Request.Form["rushDays"];
+        material = Request.Form["material"];
+        Id = Request.Form["Id"];
+        desk.width = Convert.ToInt32(width);
+        desk.depth = Convert.ToInt32(depth);
+        quote.rushDays = Convert.ToInt32(rushDays);
+        quote.desk = desk;
+        quote.date = Convert.ToDateTime(date);
+
+        surface = desk.calculateSurface(Convert.ToInt32(width), Convert.ToInt32(depth));
+        desk.surface = Convert.ToInt32(surface);
+
+        price = quote.calculatePrice(desk, material, quote);
+        quote.price = Convert.ToInt32(price);
+
+        if (Validation.IsValid())
+        {
+            var db = Database.Open("MegaDesk");
+            var insertCommand = "UPDATE Desk SET Width = @0, Depth = @1, Drawers = @2, Material = @3, Surface = @4," +
+                        "Price = @5, Date = @6, ClientName = @7, RushDays = @8 WHERE Id = @9";
+            db.Execute(insertCommand, width, depth, drawers, material, surface, price, date, clientName, rushDays, Id);
+            Response.Redirect("~/MegaDeskMain");
+        }
+    }
+
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Mega Desk - Add Quote</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body>
+    @RenderPage("Header.cshtml")
+    <div>
+        <h1>Edit A Quote</h1>
+        @Html.ValidationSummary()
+
+        <form method="post" class="form">
+            <fieldset>
+                <legend>Desk Information</legend>
+                <p>
+                    <label for="clientName">Client Name:</label>
+                    <input type="text" name="clientName" value="@clientName" />
+                </p>
+                <p>
+                    <label for="width">Desk Width:</label>
+                    <input type="text" name="width" value="@width" />
+                </p>
+                <p>
+                    <label for="depth">Desk Depth:</label>
+                    <input type="text" name="depth" value="@depth" />
+                </p>
+                <p>
+                    <label>Date:</label>
+                    <input type="text" name="date" value="@date" disabled />
+                </p>
+                <p>
+                    <label for="rushDays">Rush Days:</label>
+                    <select name="rushDays">@Request.Form["rushDays"]
+                    <option selected>0</option>
+                    <option>3</option>
+                    <option>5</option>
+                    <option>7</option>
+                </select>
+            </p>
+            <p>
+                <label for="material">Material:</label>
+                <select name="material">
+                    @Request.Form["material"]
+                <option selected>Oak</option>
+                <option>Laminate</option>
+                <option>Pine</option>
+                <option>Rossewood</option>
+                <option>Veneer</option>
+            </select>
+        </p>
+        <p>
+            <label for="drawers">Drawers:</label>
+            <select name="drawers">
+                @Request.Form["rushDays"]
+                <option selected>0</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+            </select>
+        </p>
+
+        <p><input type="hidden" name="Id" value="@Id"/></p>
+        <p><input type="submit" name="submitButton" /></p>
+    </fieldset>
+</form>
+</div>
+</body>
+</html>
